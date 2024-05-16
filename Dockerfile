@@ -1,5 +1,5 @@
 # Use Ubuntu 22.04 as base
-FROM ubuntu:22.04
+FROM ubuntu:jammy
 
 # Install cURL, Python 3, sudo, unbuffer and the package for "add-apt-repository"
 RUN apt update -y && apt install -y curl wget python3 sudo expect-dev software-properties-common xvfb

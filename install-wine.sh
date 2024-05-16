@@ -10,9 +10,9 @@ set -euxo pipefail
 # - Wine download links from WineHQ: https://dl.winehq.org/wine-builds/
 
 branch="stable" #example: devel, staging, or stable (wine-staging 4.5+ requires libfaudio0:i386)
-version="7.0.2" #example: "7.1"
-id="debian" #example: debian, ubuntu
-dist="bookworm" #example (for debian): bullseye, buster, jessie, wheezy, ${VERSION_CODENAME}, etc 
+version="9.0.0.0" #example: "7.1"
+id="ubuntu" #example: debian, ubuntu
+dist="jammy" #example (for debian): bullseye, buster, jessie, wheezy, ${VERSION_CODENAME}, etc 
 tag="-1" #example: -1 (some wine .deb files have -1 tag on the end and some don't)
 
 ########################################################
@@ -46,30 +46,9 @@ rm -rf ${DEB_A1} ${DEB_A2} ${DEB_B1}
 # Download wine dependencies
 # - these packages are needed for running box86/wine-i386 on a 64-bit RPiOS via multiarch
 dpkg --add-architecture armhf && apt-get update -y # enable multi-arch
-# apt-get install -y winbind:armhf libasound2-plugins:armhf libasound2:armhf libc6:armhf libcapi20-3:armhf libcups2:armhf libdbus-1-3:armhf libfontconfig1:armhf libfreetype6:armhf libglib2.0-0:armhf libglu1-mesa:armhf libgnutls30:armhf libgphoto2-6:armhf libgphoto2-port12:armhf libgsm1:armhf libgssapi-krb5-2:armhf libgstreamer-plugins-base1.0-0:armhf libgstreamer1.0-0:armhf libjpeg62-turbo:armhf libkrb5-3:armhf libncurses6:armhf libodbc1:armhf libosmesa6:armhf libpcap0.8:armhf libpng16-16:armhf libpulse0:armhf libsane1:armhf libsdl2-2.0-0:armhf libtiff6:armhf libudev1:armhf libunwind8:armhf libusb-1.0-0:armhf libv4l-0:armhf libx11-6:armhf libxcomposite1:armhf libxcursor1:armhf libxext6:armhf libxfixes3:armhf libxi6:armhf libxinerama1:armhf libxrandr2:armhf libxrender1:armhf libxslt1.1:armhf libxxf86vm1:armhf ocl-icd-libopencl1:armhf # to run wine-i386 through box86:armhf on aarch64
-apt-get install -y winbind:armhf libasound2-plugins:armhf libasound2:armhf libc6:armhf libcapi20-3:armhf libcups2:armhf libdbus-1-3:armhf libfontconfig1:armhf libfreetype6:armhf libglib2.0-0:armhf libglu1-mesa:armhf libgnutls30:armhf libgphoto2-6:armhf libgphoto2-port12:armhf libgsm1:armhf libgssapi-krb5-2:armhf libgstreamer-plugins-base1.0-0:armhf libgstreamer1.0-0:armhf  libkrb5-3:armhf libncurses6:armhf libodbc1:armhf libosmesa6:armhf libpcap0.8:armhf libpng16-16:armhf libpulse0:armhf libsane1:armhf libsdl2-2.0-0:armhf libudev1:armhf libunwind8:armhf libusb-1.0-0:armhf libv4l-0:armhf libx11-6:armhf libxcomposite1:armhf libxcursor1:armhf libxext6:armhf libxfixes3:armhf libxi6:armhf libxinerama1:armhf libxrandr2:armhf libxrender1:armhf libxslt1.1:armhf libxxf86vm1:armhf ocl-icd-libopencl1:armhf # to run wine-i386 through box86:armhf on aarch64
-# apt-get install -y libasound2-plugins:armhf libasound2:armhf libc6:armhf libcapi20-3:armhf libcups2:armhf libdbus-1-3:armhf libfontconfig1:armhf libfreetype6:armhf libglib2.0-0:armhf libglu1-mesa:armhf libgnutls30:armhf libgphoto2-6:armhf libgphoto2-port12:armhf libgsm1:armhf libgssapi-krb5-2:armhf libgstreamer-plugins-base1.0-0:armhf libgstreamer1.0-0:armhf libjpeg62-turbo:armhf libkrb5-3:armhf libncurses6:armhf libodbc1:armhf libosmesa6:armhf libpcap0.8:armhf libpng16-16:armhf libpulse0:armhf libsane1:armhf libsdl2-2.0-0:armhf libudev1:armhf libunwind8:armhf libusb-1.0-0:armhf libv4l-0:armhf libx11-6:armhf libxcomposite1:armhf libxcursor1:armhf libxext6:armhf libxfixes3:armhf libxi6:armhf libxinerama1:armhf libxrandr2:armhf libxrender1:armhf libxslt1.1:armhf libxxf86vm1:armhf ocl-icd-libopencl1:armhf # to run wine-i386 through box86:armhf on aarch64
-    # This list found by downloading...
-    #	wget https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-i386/wine-staging-i386_8.11~bookworm-1_i386.deb
-    #	wget https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-i386/wine-staging_8.11~bookworm-1_i386.deb
-    #	wget https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-i386/winehq-staging_8.11~bookworm-1_i386.deb
-    # then `dpkg-deb -I package.deb`. Read output, add `:armhf` to packages in dep list, then try installing them on Pi aarch64.
-    
-# - these packages are needed for running box64/wine-amd64 on RPiOS (box64 only runs on 64-bit OS's)
-apt-get install -y winbind:arm64 libasound2-plugins:arm64 libasound2:arm64 libc6:arm64 libcapi20-3:arm64 libcups2:arm64 libdbus-1-3:arm64 libfontconfig1:arm64 libfreetype6:arm64 libglib2.0-0:arm64 libglu1-mesa:arm64 libgnutls30:arm64 libgphoto2-6:arm64 libgphoto2-port12:arm64 libgsm1:arm64 libgssapi-krb5-2:arm64 libgstreamer-plugins-base1.0-0:arm64 libgstreamer1.0-0:arm64 libkrb5-3:arm64 libncurses6:arm64 libodbc1:arm64 libosmesa6:arm64 libpcap0.8:arm64 libpng16-16:arm64 libpulse0:arm64 libsane1:arm64 libsdl2-2.0-0:arm64  libudev1:arm64 libusb-1.0-0:arm64 libv4l-0:arm64 libx11-6:arm64 libxcomposite1:arm64 libxcursor1:arm64 libxext6:arm64 libxfixes3:arm64 libxi6:arm64 libxinerama1:arm64 libxrandr2:arm64 libxrender1:arm64 libxslt1.1:arm64 libxxf86vm1:arm64 ocl-icd-libopencl1:arm64 
-# apt-get install -y libasound2-plugins:arm64 libasound2:arm64 libc6:arm64 libcapi20-3:arm64 libcups2:arm64 libdbus-1-3:arm64 libfontconfig1:arm64 libfreetype6:arm64 libglib2.0-0:arm64 libglu1-mesa:arm64 libgnutls30:arm64 libgphoto2-6:arm64 libgphoto2-port12:arm64 libgsm1:arm64 libgssapi-krb5-2:arm64 libgstreamer-plugins-base1.0-0:arm64 libgstreamer1.0-0:arm64 libjpeg62-turbo:arm64 libkrb5-3:arm64 libncurses6:arm64 libodbc1:arm64 libosmesa6:arm64 libpcap0.8:arm64 libpng16-16:arm64 libpulse0:arm64 libsane1:arm64 libsdl2-2.0-0:arm64 libudev1:arm64 libusb-1.0-0:arm64 libv4l-0:arm64 libx11-6:arm64 libxcomposite1:arm64 libxcursor1:arm64 libxext6:arm64 libxfixes3:arm64 libxi6:arm64 libxinerama1:arm64 libxrandr2:arm64 libxrender1:arm64 libxslt1.1:arm64 libxxf86vm1:arm64 ocl-icd-libopencl1:arm64 
-    # This list found by downloading...
-    #	wget https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-amd64/wine-staging-amd64_8.11~bookworm-1_amd64.deb
-    #	wget https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-amd64/wine-staging_8.11~bookworm-1_amd64.deb
-    #   wget https://dl.winehq.org/wine-builds/debian/dists/bookworm/main/binary-amd64/winehq-staging_8.11~bookworm-1_amd64.deb
-    # then `dpkg-deb -I package.deb`. Read output, add `:arm64` to packages in dep list, then try installing them on Pi aarch64.	
+apt-get install -y winbind:armhf # to run wine-i386 through box86:armhf on aarch64
+apt-get install -y winbind:arm64
 
-# These packages are needed for running wine-staging on RPiOS (Credits: chills340)
-apt install libstb0 -y
-cd ~
-wget -r -l1 -np -nd -A "libfaudio0_*~bpo10+1_i386.deb" http://ftp.us.debian.org/debian/pool/main/f/faudio/ # Download libfaudio i386 no matter its version number
-dpkg-deb -xv libfaudio0_*~bpo10+1_i386.deb libfaudio
-cp -TRv libfaudio/usr/ /usr/
 
 # Install winetricks
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
@@ -77,8 +56,6 @@ chmod +x winetricks
 mv winetricks /usr/local/bin/
 
 # Clean up
-rm libfaudio0_*~bpo10+1_i386.deb 
-rm -rf libfaudio 
 apt-get -y autoremove 
 apt-get clean autoclean 
 rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists
