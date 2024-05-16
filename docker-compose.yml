@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  vrising:
+    stdin_open: true # equivalent of -i
+    tty: true        # equivalent of -t
+    # build: . # Build from Dockerfile
+    container_name: vrising
+    image: vrising
+    network_mode: bridge
+    environment:
+      - TZ=Asia/Tokyo
+      - SERVERNAME=gogoout vrising
+    volumes:
+      - '/home/ubuntu/v/server:/mnt/vrising/server:rw'
+      - '/home/ubuntu/v/data:/mnt/vrising/persistentdata:rw'
+    ports:
+      - '9876:9876/udp'
+      - '9877:9877/udp'
