@@ -5,15 +5,6 @@ p=/vrising/data
 
 wine wineboot -i && wine64 wineboot -i
 
-function installServer() {
-  echo " "
-  echo "Updating V-Rising Dedicated Server files..."
-  echo " "
-  FEXBash "./steamcmd/steamcmd.sh +@sSteamCmdForcePlatformType windows +force_install_dir $s +login anonymous +app_update 1829350 validate +quit"
-  echo "steam_appid: "`cat $s/steam_appid.txt`
-}
-
-
 function main() {
 
   # Check if we have proper read/write permissions to /palworld
@@ -37,9 +28,12 @@ function main() {
     query_port=" -queryPort $QUERYPORT"
   fi
 
-
-  # Check for SteamCMD updates
-  installServer
+  # Check for SteamCMD and server updates
+  echo " "
+  echo "Updating V-Rising Dedicated Server files..."
+  echo " "
+  FEXBash "./steamcmd/steamcmd.sh +@sSteamCmdForcePlatformType windows +force_install_dir $s +login anonymous +app_update 1829350 validate +quit"
+  echo "steam_appid: "`cat $s/steam_appid.txt`
 
   mkdir "$p/Settings" 2>/dev/null
   if [ ! -f "$p/Settings/ServerGameSettings.json" ]; then
@@ -53,8 +47,8 @@ function main() {
 
 
   # Fix for steamclient.so not being found
-  # mkdir -p /home/steam/.steam/sdk64
-  # cp /home/steam/Steam/linux64/steamclient.so /home/steam/.steam/sdk64/steamclient.so
+  mkdir -p /home/steam/.steam/sdk64
+  cp /home/steam/Steam/linux64/steamclient.so /home/steam/.steam/sdk64/steamclient.so
 
 
   # Checks if log file exists, if not creates it
@@ -65,11 +59,9 @@ function main() {
           touch $p/$logfile
   fi
 
-  # echo "Trying to remove /tmp/.X0-lock"
-  # rm /tmp/.X0-lock 2>&1
-  # echo " "
   echo "Starting Xvfb"
   Xvfb :0 -screen 0 1024x768x16 &
+
   echo "Launching wine64 V Rising using $SERVERNAME"
   echo " "
   # Start server
