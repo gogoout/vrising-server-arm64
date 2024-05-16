@@ -9,8 +9,8 @@ set -euxo pipefail
 # - Note that we need the i386 version for Box86 even though we're installing it on our ARM processor.
 # - Wine download links from WineHQ: https://dl.winehq.org/wine-builds/
 
-branch="stable" #example: devel, staging, or stable (wine-staging 4.5+ requires libfaudio0:i386)
-version="9.0.0.0" #example: "7.1"
+branch="$WINE_BRANCH" #example: devel, staging, or stable (wine-staging 4.5+ requires libfaudio0:i386)
+version="$WINE_VERSION" #example: "7.1"
 id="ubuntu" #example: debian, ubuntu
 dist="jammy" #example (for debian): bullseye, buster, jessie, wheezy, ${VERSION_CODENAME}, etc 
 tag="-1" #example: -1 (some wine .deb files have -1 tag on the end and some don't)
@@ -45,9 +45,9 @@ rm -rf ${DEB_A1} ${DEB_A2} ${DEB_B1}
 
 # Download wine dependencies
 # - these packages are needed for running box86/wine-i386 on a 64-bit RPiOS via multiarch
-dpkg --add-architecture armhf && apt-get update -y # enable multi-arch
-apt-get install -y winbind:armhf # to run wine-i386 through box86:armhf on aarch64
-apt-get install -y winbind:arm64
+dpkg --add-architecture armhf && apt update -y # enable multi-arch
+apt install -y winbind:armhf # to run wine-i386 through box86:armhf on aarch64
+apt install -y winbind:arm64
 
 
 # Install winetricks
@@ -56,6 +56,6 @@ chmod +x winetricks
 mv winetricks /usr/local/bin/
 
 # Clean up
-apt-get -y autoremove 
-apt-get clean autoclean 
+apt -y autoremove 
+apt clean autoclean 
 rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists

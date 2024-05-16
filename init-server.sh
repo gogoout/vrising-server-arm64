@@ -1,10 +1,9 @@
 #!/bin/bash
 # Based on server manager from https://github.com/jammsen/docker-palworld-dedicated-server
-s=/mnt/vrising/server
-p=/mnt/vrising/persistentdata
+s=/vrising/server
+p=/vrising/data
 
 wine wineboot -i && wine64 wineboot -i
-
 
 function installServer() {
   echo " "

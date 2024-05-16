@@ -1,8 +1,10 @@
 # Use Ubuntu 22.04 as base
 FROM ubuntu:jammy
+VOLUME ["/vrising/server", "/vrising/data", "/home/steam/steamcmd"]
 
 # Install cURL, Python 3, sudo, unbuffer and the package for "add-apt-repository"
 RUN apt update -y && apt install -y curl wget python3 sudo expect-dev software-properties-common xvfb
+
 
 # Download Install FEX script to temp file
 RUN curl --silent https://raw.githubusercontent.com/FEX-Emu/FEX/main/Scripts/InstallFEX.py --output /tmp/InstallFEX.py
@@ -15,32 +17,40 @@ RUN sed -i 's@\["FEXRootFSFetcher"\]@"sudo -u root bash -c \\"unbuffer FEXRootFS
 # Run verification on steam user
 RUN sed -i 's@\["FEXInterpreter", "/usr/bin/uname", "-a"\]@"sudo -u root bash -c \\"FEXInterpreter /usr/bin/uname -a\\"", shell=True@g' /tmp/InstallFEX.py
 
-
 # Run Install FEX and remove the temp file
 RUN python3 /tmp/InstallFEX.py && rm /tmp/InstallFEX.py
 
+
+ENV WINE_VERSION 9.8
+ENV WINE_BRANCH devel
 
 # Install wine, wine64, and winetricks
 COPY install-wine.sh /
 RUN bash /install-wine.sh \
  && rm /install-wine.sh
-
+ 
 # Install box wrapper for wine
 COPY wrap-wine.sh /
 RUN bash /wrap-wine.sh \
- && rm /wrap-wine.sh
-
-
-# Go to /home/steam/Steam
-WORKDIR /home/steam/steamcmd
+&& rm /wrap-wine.sh
+ 
 
 # Download and extract SteamCMD
+WORKDIR /home/steam/steamcmd
 RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
-RUN chown root:root ../steamcmd
-
-# Copy init-server.sh to container
-COPY --chmod=755 ./init-server.sh /home/steam/init-server.sh
+RUN chmod -R 777 /home/steam/steamcmd
 
 WORKDIR /home/steam
+
+# Copy init-server.sh to container
+COPY --chmod=777 ./init-server.sh .
+
+# Copy the health check script
+COPY --chmod=777 ./healthz.sh .
+
+# Define the health check
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10m \
+    CMD /home/steam/healthz.sh
+
 # Run it
 ENTRYPOINT /home/steam/init-server.sh
