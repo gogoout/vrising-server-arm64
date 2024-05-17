@@ -2,10 +2,28 @@
 # Based on server manager from https://github.com/jammsen/docker-palworld-dedicated-server
 s=/vrising/server
 p=/vrising/data
+LOGDAYS=30
 
 wine wineboot -i && wine64 wineboot -i
 
-function main() {
+term_handler() {
+    echo "Shutting down Server"
+
+    PID=$(pgrep -f "^${s}/VRisingServer.exe")
+    kill -n 15 $PID
+    wait $PID
+    wineserver -k
+    sleep 1
+    exit
+}
+
+cleanup_logs() {
+    echo "Cleaning up logs older than $LOGDAYS days"
+    find "$p" -name "*.log" -type f -mtime +$LOGDAYS -exec rm {} \;
+}
+
+main() {
+  trap 'term_handler' SIGTERM
 
   # Check if we have proper read/write permissions to /palworld
   if [ ! -r "$s" ] || [ ! -w "$s" ]; then
@@ -46,10 +64,11 @@ function main() {
   fi
 
 
-  # Fix for steamclient.so not being found
-  mkdir -p /home/steam/.steam/sdk64
-  cp /home/steam/steamcmd/linux64/steamclient.so ~/.steam/sdk64/steamclient.so
+  # # Fix for steamclient.so not being found
+  # mkdir -p /home/steam/.steam/sdk64
+  # cp /home/steam/steamcmd/linux64/steamclient.so ~/.steam/sdk64/steamclient.so
 
+  cleanup_logs
 
   # Checks if log file exists, if not creates it
   current_date=$(date +"%Y%m%d-%H%M")
@@ -66,7 +85,16 @@ function main() {
   echo " "
   # Start server
   set SteamAppId=1604030
-  DISPLAY=:0.0 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile"
+  v() {
+    DISPLAY=:0.0 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile" 2>&1 &
+  }
+  v
+  # Gets the PID of the last command
+  ServerPID=$!
+
+  # Tail log file and waits for Server PID to exit
+  tail -n 0 -f $p/$logfile &
+  wait $ServerPID
 }
 
 main
