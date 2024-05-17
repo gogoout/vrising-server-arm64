@@ -48,7 +48,7 @@ function main() {
 
   # Fix for steamclient.so not being found
   mkdir -p /home/steam/.steam/sdk64
-  cp /home/steam/Steam/linux64/steamclient.so /home/steam/.steam/sdk64/steamclient.so
+  cp /home/steam/steamcmd/linux64/steamclient.so ~/.steam/sdk64/steamclient.so
 
 
   # Checks if log file exists, if not creates it
@@ -65,7 +65,8 @@ function main() {
   echo "Launching wine64 V Rising using $SERVERNAME"
   echo " "
   # Start server
-  DISPLAY=:0.0 wine64 "$s/VRisingServer.exe -persistentDataPath $p -serverName '$SERVERNAME' -saveName '$WORLDNAME' -logFile '$p/$logfile'"
+  set SteamAppId=1604030
+  DISPLAY=:0.0 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile"
 }
 
 main

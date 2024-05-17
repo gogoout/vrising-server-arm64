@@ -46,8 +46,8 @@ rm -rf ${DEB_A1} ${DEB_A2} ${DEB_B1}
 # Download wine dependencies
 # - these packages are needed for running box86/wine-i386 on a 64-bit RPiOS via multiarch
 dpkg --add-architecture armhf && apt update -y # enable multi-arch
-apt install -y winbind:armhf # to run wine-i386 through box86:armhf on aarch64
-apt install -y winbind:arm64
+apt install -y winbind:armhf libldap-common:armhf # to run wine-i386 through box86:armhf on aarch64
+apt install -y winbind:arm64 libldap-common:armhf
 
 
 # Install winetricks

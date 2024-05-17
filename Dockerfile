@@ -49,8 +49,8 @@ COPY --chmod=777 ./init-server.sh .
 COPY --chmod=777 ./healthz.sh .
 
 # Define the health check
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10m \
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=8m \
     CMD /home/steam/healthz.sh
 
 # Run it
-ENTRYPOINT /home/steam/init-server.sh
+CMD ["./init-server.sh"] 

@@ -1,13 +1,19 @@
 #!/bin/bash
 
-nc -uzv -w 2 127.0.0.1 9876 > /dev/null 2>&1
+# Path to the Saves directory
+SAVES_DIR="/vrising/data/Saves"
 
-# If the command above returns non-zero, the container is unhealthy
-health_status=$?
-if [ "$health_status" -ne 0 ]; then
-    echo "UDP port 9876 is not open"
+# Get the current time
+NOW=$(date +%s)
+
+# Check if any files in the Saves directory have been modified within the last 3 minutes
+LAST_MODIFIED=$(find "$SAVES_DIR" -type f -printf '%T@\n' | sort -rn | head -n 1)
+LAST_MODIFIED_TIME=$(($LAST_MODIFIED + 180))
+
+if [ "$LAST_MODIFIED_TIME" -lt "$NOW" ]; then
+    echo "No files updated in the last 3 minutes"
     exit 1
 else
-    echo "UDP port 9876 is open"
+    echo "Files updated in the last 3 minutes"
     exit 0
 fi
