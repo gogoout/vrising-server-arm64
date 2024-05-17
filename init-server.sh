@@ -4,7 +4,6 @@ s=/vrising/server
 p=/vrising/data
 LOGDAYS=30
 
-wine wineboot -i && wine64 wineboot -i
 
 term_handler() {
     echo "Shutting down Server"
@@ -24,7 +23,14 @@ cleanup_logs() {
 
 main() {
   trap 'term_handler' SIGTERM
+  
+  wine --version
+  wine wineboot -i
 
+  wine64 --version
+  wine64 wineboot -i
+  env WINEPREFIX=~/.wine64 WINE=~/wine/bin/wine64 winetricks -q arch=64 win10
+  
   # Check if we have proper read/write permissions to /palworld
   if [ ! -r "$s" ] || [ ! -w "$s" ]; then
       echo "ERROR: I do not have read/write permissions to $s! Please run "chown -R 1000:1000 $s" on host machine, then try again."
@@ -84,9 +90,8 @@ main() {
   echo "Launching wine64 V Rising using $SERVERNAME"
   echo " "
   # Start server
-  set SteamAppId=1604030
   v() {
-    DISPLAY=:0.0 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile" 2>&1 &
+    DISPLAY=:0.0 env SteamAppId=1604030 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile" 2>&1 &
   }
   v
   # Gets the PID of the last command
