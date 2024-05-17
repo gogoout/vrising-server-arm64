@@ -6,6 +6,8 @@ services:
     # build: . # Build from Dockerfile
     restart: unless-stopped
     container_name: vrising
+    labels:
+      vrising-app: true
     image: vrising
     network_mode: bridge
     environment:
@@ -18,3 +20,13 @@ services:
       - '9876:9876/udp'
       - '9877:9877/udp'
       - '25575:25575/tcp'
+  autoheal:
+    restart: always
+    image: willfarrell/autoheal
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=vrising-app
+      - AUTOHEAL_INTERVAL=5
+      - AUTOHEAL_ONLY_MONITOR_RUNNING=true
+      - AUTOHEAL_START_PERIOD=300
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
