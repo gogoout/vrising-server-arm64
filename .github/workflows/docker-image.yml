@@ -1,7 +1,10 @@
 name: Build and publish to docker hub
 
+env:
+    DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 on:
-  push:
+  [workflow_call, workflow_dispatch]
 
 jobs:
   docker:
