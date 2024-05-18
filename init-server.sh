@@ -24,13 +24,6 @@ cleanup_logs() {
 main() {
   trap 'term_handler' SIGTERM
   
-  wine --version
-  wine wineboot -i
-
-  wine64 --version
-  wine64 wineboot -i
-  env WINEPREFIX=~/.wine64 WINE=~/wine/bin/wine64 winetricks -q arch=64 win10
-  
   # Check if we have proper read/write permissions to /palworld
   if [ ! -r "$s" ] || [ ! -w "$s" ]; then
       echo "ERROR: I do not have read/write permissions to $s! Please run "chown -R 1000:1000 $s" on host machine, then try again."

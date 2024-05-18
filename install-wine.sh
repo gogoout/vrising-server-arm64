@@ -1,5 +1,51 @@
 #!/bin/bash
 set -euxo pipefail
+
+get_deb_dependencies() {
+    local deb_file="$1"
+    local suffix="$2"
+
+    # Run dpkg-deb command to get package information
+    dependencies=$(dpkg-deb --field "$deb_file" Depends 2>&1)
+
+    # Check for errors
+    if [ $? -ne 0 ]; then
+        echo "Error parsing .deb file: $dependencies"
+        return 1
+    fi
+
+  local dependencies_with_suffix=""
+
+  # Remove the "dependencies=" prefix and trim leading/trailing whitespace
+  dependencies=$(echo "$dependencies" | sed 's/^dependencies=//' | xargs)
+
+  # Split the string by ',' or '|'
+  IFS=',|' read -ra dep_array <<< "$dependencies"
+
+  for dep in "${dep_array[@]}"; do
+    # Trim leading and trailing whitespace
+    dep=$(echo "$dep" | xargs)
+
+    # Check if the dependency string contains '(>=', and remove it if found
+    if [[ "$dep" == *\(* ]]; then
+      dep="${dep%% (*}"
+    fi
+
+    # Extract the package name
+    local package_name="${dep%% *}"
+
+    if [ -n "$dependencies_with_suffix" ]; then
+      dependencies_with_suffix+=", "
+    fi
+
+    # Append the package name with the suffix
+    dependencies_with_suffix+="${package_name}${suffix}"
+  done
+
+  echo "$dependencies_with_suffix"
+}
+
+
 # NOTE: Can only run on aarch64 (since box64 can only run on aarch64)
 # box64 runs wine-amd64, box86 runs wine-i386.
 
@@ -40,14 +86,49 @@ dpkg-deb -x ${DEB_B1} wine-installer
 echo -e "Installing wine . . ."
 mv wine-installer/opt/wine* ~/wine
 
-# Clean up
-rm -rf ${DEB_A1} ${DEB_A2} ${DEB_B1}
-
 # Download wine dependencies
 # - these packages are needed for running box86/wine-i386 on a 64-bit RPiOS via multiarch
 dpkg --add-architecture armhf && apt update -y # enable multi-arch
-apt install -y winbind:armhf libldap-common:armhf # to run wine-i386 through box86:armhf on aarch64
-apt install -y winbind:arm64 libldap-common:armhf
+
+DEPENDENCIES_A1_HF=$(get_deb_dependencies "$DEB_A1" ":armhf")
+echo "Installing dependencies for $DEB_A1 with armhf suffix..."
+# Install dependencies with apt-get
+# Ignore missing packages with --no-install-recommends
+apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A1_HF" | tr ', ' ' ') || true
+
+DEPENDENCIES_A2_HF=$(get_deb_dependencies "$DEB_A2" ":armhf")
+echo "Installing dependencies for $DEB_A2 with armhf suffix..."
+# Install dependencies with apt-get
+# Ignore missing packages with --no-install-recommends
+apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A2_HF" | tr ', ' ' ') || true
+
+DEPENDENCIES_B1_HF=$(get_deb_dependencies "$DEB_B1" ":armhf")
+echo "Installing dependencies for $DEB_B1 with armhf suffix..."
+# Install dependencies with apt-get
+# Ignore missing packages with --no-install-recommends
+apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A3_HF" | tr ', ' ' ') || true
+
+DEPENDENCIES_A1_HF=$(get_deb_dependencies "$DEB_A1" ":armhf")
+echo "Installing dependencies for $DEB_A1 with armhf suffix..."
+# Install dependencies with apt-get
+# Ignore missing packages with --no-install-recommends
+apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A1_HF" | tr ', ' ' ') || true
+
+DEPENDENCIES_A2_HF=$(get_deb_dependencies "$DEB_A2" ":armhf")
+echo "Installing dependencies for $DEB_A2 with armhf suffix..."
+# Install dependencies with apt-get
+# Ignore missing packages with --no-install-recommends
+apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A2_HF" | tr ', ' ' ') || true
+
+DEPENDENCIES_B1_HF=$(get_deb_dependencies "$DEB_B1" ":armhf")
+echo "Installing dependencies for $DEB_B1 with armhf suffix..."
+# Install dependencies with apt-get
+# Ignore missing packages with --no-install-recommends
+apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A3_HF" | tr ', ' ' ') || true
+
+# install some additional stuff
+apt install -y winbind # to run wine-i386 through box86:armhf on aarch64
+
 
 
 # Install winetricks
@@ -56,6 +137,7 @@ chmod +x winetricks
 mv winetricks /usr/local/bin/
 
 # Clean up
+rm -rf ${DEB_A1} ${DEB_A2} ${DEB_B1}
 apt -y autoremove 
 apt clean autoclean 
 rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists

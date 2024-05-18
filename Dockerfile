@@ -26,14 +26,14 @@ ENV WINE_BRANCH devel
 
 # Install wine, wine64, and winetricks
 COPY install-wine.sh /
-RUN bash /install-wine.sh \
- && rm /install-wine.sh
+RUN bash /install-wine.sh && rm /install-wine.sh
  
 # Install box wrapper for wine
 COPY wrap-wine.sh /
-RUN bash /wrap-wine.sh \
-&& rm /wrap-wine.sh
+RUN bash /wrap-wine.sh && rm /wrap-wine.sh
  
+COPY init-wine.sh /
+RUN bash /init-wine.sh && rm /init-wine.sh
 
 # Download and extract SteamCMD
 WORKDIR /home/steam/steamcmd
