@@ -12,7 +12,6 @@ services:
     network_mode: bridge
     environment:
       - TZ=Asia/Tokyo
-      - SERVERNAME=gogoout vrising
     volumes:
       - '/home/ubuntu/v/server:/vrising/server:rw'
       - '/home/ubuntu/v/data:/vrising/data:rw'

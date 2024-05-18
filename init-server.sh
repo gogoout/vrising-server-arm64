@@ -23,26 +23,11 @@ cleanup_logs() {
 
 main() {
   trap 'term_handler' SIGTERM
-  
+
   # Check if we have proper read/write permissions to /palworld
   if [ ! -r "$s" ] || [ ! -w "$s" ]; then
       echo "ERROR: I do not have read/write permissions to $s! Please run "chown -R 1000:1000 $s" on host machine, then try again."
       exit 1
-  fi
-
-  if [ -z "$SERVERNAME" ]; then
-    SERVERNAME="arm vrising"
-  fi
-  if [ -z "$WORLDNAME" ]; then
-    WORLDNAME="world1"
-  fi
-  game_port=""
-  if [ ! -z $GAMEPORT ]; then
-    game_port=" -gamePort $GAMEPORT"
-  fi
-  query_port=""
-  if [ ! -z $QUERYPORT ]; then
-    query_port=" -queryPort $QUERYPORT"
   fi
 
   # Check for SteamCMD and server updates
@@ -80,7 +65,7 @@ main() {
   echo "Starting Xvfb"
   Xvfb :0 -screen 0 1024x768x16 &
 
-  echo "Launching wine64 V Rising using $SERVERNAME"
+  echo "Launching ARM V Rising"
   echo " "
   # Start server
   v() {
