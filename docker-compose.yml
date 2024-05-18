@@ -25,8 +25,8 @@ services:
     image: willfarrell/autoheal
     environment:
       - AUTOHEAL_CONTAINER_LABEL=vrising-app
-      - AUTOHEAL_INTERVAL=5
+      - AUTOHEAL_INTERVAL=15
       - AUTOHEAL_ONLY_MONITOR_RUNNING=true
-      - AUTOHEAL_START_PERIOD=300
+      - AUTOHEAL_START_PERIOD=600
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
