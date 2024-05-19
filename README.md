@@ -35,7 +35,7 @@ services:
     container_name: vrising
     labels:
       vrising-app: true
-    image: vrising
+    image: gogoout/vrising-arm64
     network_mode: bridge
     environment:
       - TZ=Asia/Tokyo
@@ -79,7 +79,7 @@ The Docker image accepts the following volumes:
 
 ## Known Issues
 
-- The server would random crash after sometimes. I have included a health check script to test the server if it is not
+- The server would random crash (without error log) after sometimes. I have included a health check script to test the server if it is not
   running. It's recommended to use docker-compose to run the server. The autoheal container will restart the server if
   it's not running.
 - The health check script checks if any files is being modified in the last 3 minutes. So be sure to set your

@@ -69,7 +69,7 @@ main() {
   echo " "
   # Start server
   v() {
-    DISPLAY=:0.0 env SteamAppId=1604030 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile -nographics -batchmode" 2>&1 &
+    DISPLAY=:0.0 env SteamAppId=1604030 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile -nographics" 2>&1 &
   }
   v
   # Gets the PID of the last command

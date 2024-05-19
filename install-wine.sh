@@ -87,47 +87,47 @@ echo -e "Installing wine . . ."
 mv wine-installer/opt/wine* ~/wine
 
 # Download wine dependencies
+# armhf shouldn't be needed for Fex right?
 # - these packages are needed for running box86/wine-i386 on a 64-bit RPiOS via multiarch
-dpkg --add-architecture armhf && apt update -y # enable multi-arch
+# dpkg --add-architecture armhf && apt update -y # enable multi-arch
+# DEPENDENCIES_A1_HF=$(get_deb_dependencies "$DEB_A1" ":armhf")
+# echo "Installing dependencies for $DEB_A1 with armhf suffix..."
+# # Install dependencies with apt-get
+# # Ignore missing packages with --no-install-recommends
+# apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A1_HF" | tr ', ' ' ') || true
 
-DEPENDENCIES_A1_HF=$(get_deb_dependencies "$DEB_A1" ":armhf")
-echo "Installing dependencies for $DEB_A1 with armhf suffix..."
-# Install dependencies with apt-get
-# Ignore missing packages with --no-install-recommends
-apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A1_HF" | tr ', ' ' ') || true
+# DEPENDENCIES_A2_HF=$(get_deb_dependencies "$DEB_A2" ":armhf")
+# echo "Installing dependencies for $DEB_A2 with armhf suffix..."
+# # Install dependencies with apt-get
+# # Ignore missing packages with --no-install-recommends
+# apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A2_HF" | tr ', ' ' ') || true
 
-DEPENDENCIES_A2_HF=$(get_deb_dependencies "$DEB_A2" ":armhf")
-echo "Installing dependencies for $DEB_A2 with armhf suffix..."
-# Install dependencies with apt-get
-# Ignore missing packages with --no-install-recommends
-apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A2_HF" | tr ', ' ' ') || true
-
-DEPENDENCIES_B1_HF=$(get_deb_dependencies "$DEB_B1" ":armhf")
-echo "Installing dependencies for $DEB_B1 with armhf suffix..."
+# DEPENDENCIES_B1_HF=$(get_deb_dependencies "$DEB_B1" ":armhf")
+# echo "Installing dependencies for $DEB_B1 with armhf suffix..."
 # Install dependencies with apt-get
 # Ignore missing packages with --no-install-recommends
 apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A3_HF" | tr ', ' ' ') || true
 
-DEPENDENCIES_A1_HF=$(get_deb_dependencies "$DEB_A1" ":armhf")
-echo "Installing dependencies for $DEB_A1 with armhf suffix..."
+DEPENDENCIES_A1_HF=$(get_deb_dependencies "$DEB_A1" "")
+echo "Installing dependencies for $DEB_A1 with suffix..."
 # Install dependencies with apt-get
 # Ignore missing packages with --no-install-recommends
 apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A1_HF" | tr ', ' ' ') || true
 
-DEPENDENCIES_A2_HF=$(get_deb_dependencies "$DEB_A2" ":armhf")
-echo "Installing dependencies for $DEB_A2 with armhf suffix..."
+DEPENDENCIES_A2_HF=$(get_deb_dependencies "$DEB_A2" "")
+echo "Installing dependencies for $DEB_A2 with suffix..."
 # Install dependencies with apt-get
 # Ignore missing packages with --no-install-recommends
 apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A2_HF" | tr ', ' ' ') || true
 
-DEPENDENCIES_B1_HF=$(get_deb_dependencies "$DEB_B1" ":armhf")
-echo "Installing dependencies for $DEB_B1 with armhf suffix..."
+DEPENDENCIES_B1_HF=$(get_deb_dependencies "$DEB_B1" "")
+echo "Installing dependencies for $DEB_B1 with suffix..."
 # Install dependencies with apt-get
 # Ignore missing packages with --no-install-recommends
 apt-get install --no-install-recommends --ignore-missing $(echo "$DEPENDENCIES_A3_HF" | tr ', ' ' ') || true
 
 # install some additional stuff
-apt install -y winbind # to run wine-i386 through box86:armhf on aarch64
+apt install -y winbind # 
 
 
 
