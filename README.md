@@ -3,9 +3,9 @@
 This Docker image allows you to run the V Rising Windows game server on an ARM64 Linux machine using FEX-Emu and Wine.
 Only tested on Oracle Cloud ARM instances.
 
-[![Docker Pulls](https://badgen.net/docker/pulls/gogoout/vrising-arm64?icon=docker&label=pulls)](https://hub.docker.com/r/gogout/vrising-arm64/)
+[![Docker Pulls](https://badgen.net/docker/pulls/gogoout/vrising-arm64?icon=docker&label=pulls)](https://hub.docker.com/r/gogoout/vrising-arm64/)
 [![Docker Stars](https://badgen.net/docker/stars/gogoout/vrising-arm64?icon=docker&label=stars)](https://hub.docker.com/r/gogoout/vrising-arm64/)
-[![Docker Image Size](https://badgen.net/docker/size/gogout/vrising-arm64?icon=docker&label=image%20size)](https://hub.docker.com/r/gogout/vrising-arm64/)
+[![Docker Image Size](https://badgen.net/docker/size/gogoout/vrising-arm64?icon=docker&label=image%20size)](https://hub.docker.com/r/gogoout/vrising-arm64/)
 ![Github stars](https://badgen.net/github/stars/gogoout/vrising-server-arm64?icon=github&label=stars)
 ![Github last-commit](https://img.shields.io/github/last-commit/gogoout/vrising-server-arm64)
 
@@ -82,12 +82,14 @@ The Docker image accepts the following volumes:
 - The server would random crash after sometimes. I have included a health check script to test the server if it is not
   running. It's recommended to use docker-compose to run the server. The autoheal container will restart the server if
   it's not running.
+- The health check script checks if any files is being modified in the last 3 minutes. So be sure to set your
+  AutoSaveInterval to less than 3 minutes.
 
 ## Acknowledgments
 
-- [FEX-Emu](https://fex-emu.com/) for enabling the execution of Windows applications on ARM64 Linux
-- [Wine](https://www.winehq.org/) for the compatibility layer used to run the V Rising server
-- [Stunlock Studios](https://www.stunlockstudios.com/) for developing V Rising
+- [FEX-Emu](https://fex-emu.com/)
+- [Wine](https://www.winehq.org/)
+- [Stunlock Studios](https://www.stunlockstudios.com/)
 - [nitrog0d/palworld-arm64](https://github.com/nitrog0d/palworld-arm64) where I copied fex script into this repo
 - [TrueOsiris/docker-vrising](https://github.com/TrueOsiris/docker-vrising) where I copied shell script to init the
   server
