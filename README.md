@@ -5,7 +5,7 @@ Only tested on Oracle Cloud ARM instances.
 
 [![Docker Pulls](https://badgen.net/docker/pulls/gogoout/vrising-arm64?icon=docker&label=pulls)](https://hub.docker.com/r/gogoout/vrising-arm64/)
 [![Docker Stars](https://badgen.net/docker/stars/gogoout/vrising-arm64?icon=docker&label=stars)](https://hub.docker.com/r/gogoout/vrising-arm64/)
-[![Docker Image Size](https://badgen.net/docker/size/gogoout/vrising-arm64?icon=docker&label=image%20size)](https://hub.docker.com/r/gogoout/vrising-arm64/)
+[![Docker Image Size](https://badgen.net/docker/size/gogoout/vrising-arm64/latest/arm64?icon=docker&label=image%20size)](https://hub.docker.com/r/gogoout/vrising-arm64/)
 ![Github stars](https://badgen.net/github/stars/gogoout/vrising-server-arm64?icon=github&label=stars)
 ![Github last-commit](https://img.shields.io/github/last-commit/gogoout/vrising-server-arm64)
 
