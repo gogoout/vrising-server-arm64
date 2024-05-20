@@ -24,6 +24,8 @@ cleanup_logs() {
 main() {
   trap 'term_handler' SIGTERM
 
+  echo "Starting Xvfb"
+  Xvfb :0 -screen 0 1024x768x16 &
   # Check if we have proper read/write permissions to /palworld
   if [ ! -r "$s" ] || [ ! -w "$s" ]; then
       echo "ERROR: I do not have read/write permissions to $s! Please run "chown -R 1000:1000 $s" on host machine, then try again."
@@ -61,9 +63,6 @@ main() {
           echo "Creating ${p}/$logfile"
           touch $p/$logfile
   fi
-
-  echo "Starting Xvfb"
-  Xvfb :0 -screen 0 1024x768x16 &
 
   echo "Launching ARM V Rising"
   echo " "
