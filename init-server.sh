@@ -2,7 +2,7 @@
 # Based on server manager from https://github.com/jammsen/docker-palworld-dedicated-server
 s=/vrising/server
 p=/vrising/data
-LOGDAYS=30
+LOG_COUNT=30
 
 
 term_handler() {
@@ -17,15 +17,26 @@ term_handler() {
 }
 
 cleanup_logs() {
-    echo "Cleaning up logs older than $LOGDAYS days"
-    find "$p" -name "*.log" -type f -mtime +$LOGDAYS -exec rm {} \;
+    echo "Keeping only the latest $LOG_COUNT log files"
+
+    # Find all log files and sort them by modification time (newest first)
+    log_files=$(find "$p" -name "*.log" -type f -printf "%T@ %p\n" | sort -rn | cut -d' ' -f2-)
+
+    # Keep only the latest $LOGDAYS log files
+    latest_logs=$(echo "$log_files" | head -n $LOG_COUNT)
+
+    # Remove the rest of the log files
+    for log in $log_files; do
+        if ! echo "$latest_logs" | grep -q "$log"; then
+            echo "Removing old log: $log"
+            rm "$log"
+        fi
+    done
 }
 
 main() {
   trap 'term_handler' SIGTERM
 
-  echo "Starting Xvfb"
-  Xvfb :0 -screen 0 1024x768x16 &
   # Check if we have proper read/write permissions to /palworld
   if [ ! -r "$s" ] || [ ! -w "$s" ]; then
       echo "ERROR: I do not have read/write permissions to $s! Please run "chown -R 1000:1000 $s" on host machine, then try again."
@@ -68,11 +79,12 @@ main() {
   echo " "
   # Start server
   v() {
-    DISPLAY=:0.0 env SteamAppId=1604030 wine64 "$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile -nographics" 2>&1 &
+    wine64_cmd="$s/VRisingServer.exe -persistentDataPath $p -logFile $p/$logfile -nographics -batchmode"
+    xvfb-run sh -c "env SteamAppId=1604030 wine64 '$wine64_cmd' 2>&1" &
   }
   v
   # Gets the PID of the last command
-  ServerPID=$!
+  ServerPID=$(pgrep -n wine64)
 
   # Tail log file and waits for Server PID to exit
   tail -n 0 -f $p/$logfile &
