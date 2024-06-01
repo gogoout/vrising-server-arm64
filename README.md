@@ -25,7 +25,7 @@ docker run -d --name vrising -p 9876:9876/udp -p 9877:9877/udp -v /path/to/save-
 - Docker compose
 
 ```yaml
-version: '1.0'
+version: '3.8'
 services:
   vrising:
     stdin_open: true # equivalent of -i
