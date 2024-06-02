@@ -6,13 +6,13 @@ LOG_COUNT=30
 
 
 term_handler() {
-    echo "Shutting down Server"
-    PID=$(pgrep -f "^${s}/VRisingServer.exe")
-    kill -n 15 $PID
-    wait $PID
+    echo "Shutting down Server ..."
+    PID=$(pgrep -n wine64)
+    kill -n 15 $PID && wait $PID
     wineserver -k
-    sleep 1
     pkill Xvfb
+    sleep 1
+    echo "Server successfully shut"
     exit
 }
 
